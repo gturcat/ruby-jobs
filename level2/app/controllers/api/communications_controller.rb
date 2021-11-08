@@ -10,9 +10,15 @@ class Api::CommunicationsController < ApplicationController
     render json: communication.to_json, status: :created
   end
 
+
   def index
-    render json: Communication.all.to_json, status: :ok
+    self.content_type = "application/json"
+      self.response_body = [
+        $redis.get("communications") || ""
+      ]
   end
+
+  private
 
   def communication_params
     params.require(:communication).permit(:first_name, :last_name, :sent_at)
